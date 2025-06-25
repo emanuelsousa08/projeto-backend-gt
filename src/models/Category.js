@@ -1,35 +1,32 @@
 const { Model, DataTypes } = require('sequelize');
 const connection = require('../config/connection');
 
-class User extends Model {}
 
-User.init({
+class Category extends Model {}
+
+Category.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         unique: true
     },
-    firstname: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    surname: {
+    slug: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    email:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
+    use_in_menu: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0,
+        allowNull: true
     }
 },{
     sequelize: connection,
-    tableName: 'usuarios',
+    tableName: 'categorias',
     timestamps: true
 });
 
-module.exports = User;
+module.exports = Category;
