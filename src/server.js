@@ -1,11 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const sequelize = require('./config/connection');
-
+const publicRoutes = require('./routes/publicRoutes');
+const privateRoutes = require('./routes/privateRoutes');
 const app = express();
+
 const port = process.env.PORT || 3060;
 
-//falta chamar os app.use aqui, mas penso em criar os models primeiro
+app.use(express.json());
+app.use('/v1', publicRoutes);
+app.use('/v1', privateRoutes);
+
+
 
 sequelize.sync().then(() => {
     app.listen(port, () => {
