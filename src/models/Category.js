@@ -7,8 +7,9 @@ class Category extends Model {}
 Category.init({
     id: {
         type: DataTypes.INTEGER,
+        primaryKey: true, //garante que todo id será único e nunca será null
         autoIncrement: true,
-        unique: true
+        //unique: true
     },
     name: {
         type: DataTypes.STRING,
