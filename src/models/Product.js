@@ -8,8 +8,9 @@ class Product extends Model {}
 Product.init({
     id: {
         type: DataTypes.INTEGER,
+        primaryKey: true, //garante que todo id será único e nunca será null
         autoIncrement: true,
-        unique: true
+        //unique: true
     },
     enabled: {
         type: DataTypes.BOOLEAN,
