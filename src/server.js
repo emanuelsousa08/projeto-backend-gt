@@ -25,9 +25,14 @@
 const express = require('express');
 const app = express();
 const UserRoutes = require('./routes/UserRoutes');
+const CategoryRoutes = require('./routes/categoryRoutes');
+const ProductRoutes = require('./routes/ProductRoutes');
+//const CategoryController = require('./controllers/categoryController');
 
 app.use(express.json());
 app.use('/v1',UserRoutes);
+app.use('/v1',CategoryRoutes);
+app.use('/v1',ProductRoutes)
 
 const host = "locahost";
 const PORT = 3000;

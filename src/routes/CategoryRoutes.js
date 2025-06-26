@@ -1,8 +1,15 @@
 const express = require('express');
-const CategoryRoutes = express.Router();
-const CategoryController = require('../../controllers/CategoryController');
+const CategoryController = require('../controllers/categoryController');
+const Auth = require('../middlewares/Auth');
 
-// GET /v1/category/search - Lista de categorias com filtros
-CategoryRoutes.get('/category/search', CategoryController.search);
+const CategoryRoutes = express.Router();
+
+const categoryController = new CategoryController();
+
+CategoryRoutes.get('/category/search', categoryController.getAllCategories);
+CategoryRoutes.get('/category/:id', categoryController.getCategoryById);
+CategoryRoutes.post('/category', Auth, categoryController.createCategory);
+CategoryRoutes.put('/category/:id', Auth, categoryController.updateCategory);
+CategoryRoutes.delete('/category/:id', Auth, categoryController.deleteCategory);
 
 module.exports = CategoryRoutes;
