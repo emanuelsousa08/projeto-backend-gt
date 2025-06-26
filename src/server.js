@@ -21,3 +21,5 @@ sequelize.sync().then(() => {
 }).catch((error) => {
     console.error('Não é possível conectar ao banco de dados:', error);    
 });
+
+
