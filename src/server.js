@@ -1,17 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const sequelize = require('./config/connection');
-const publicRoutes = require('./routes/publicRoutes');
-const privateRoutes = require('./routes/privateRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
 const app = express();
 
 const port = process.env.PORT || 3060;
 
 app.use(express.json());
-app.use('/v1', publicRoutes);
-app.use('/v1', privateRoutes);
-
-
+app.use('/v1', categoryRoutes);
+app.use('/v1', productRoutes);
+app.use('/v1', userRoutes);
 
 sequelize.sync().then(() => {
     app.listen(port, () => {

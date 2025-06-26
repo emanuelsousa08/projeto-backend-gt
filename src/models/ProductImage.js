@@ -1,10 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const connection = require('../config/connection');
 const Product = require('./Product');
 
-class ProductImage extends Model {}
 
-ProductImage.init({
+const ProductImage = connection.define({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -29,7 +28,6 @@ ProductImage.init({
         allowNull: false,
     }
 },{
-        sequelize: connection,
         tableName: "imagensProduto",
         timestamps: true,
     });
