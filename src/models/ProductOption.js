@@ -4,7 +4,7 @@ const Product = require('./Product');
 
 class ProductOption extends Model {}
 
-ProductImage.init({
+ProductOption.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
