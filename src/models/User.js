@@ -1,10 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const connection = require('../config/connection');
 const bcrypt = require('bcrypt');
 
-class User extends Model {}
 
-User.init({
+const User = connection.define({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true, //garante que todo id será único e nunca será null
@@ -29,7 +28,6 @@ User.init({
         allowNull: false
     }
 },{
-    sequelize: connection,
     tableName: 'usuarios',
     timestamps: true,
     hooks:{
