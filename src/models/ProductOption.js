@@ -1,9 +1,10 @@
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const connection = require('../config/connection');
 const Product = require('./Product');
 
+class ProductOption extends Model{}
 
-const ProductOption = connection.define({
+ProductOption.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -44,6 +45,7 @@ const ProductOption = connection.define({
     }
 
 },{
+    sequelize: connection,
     tableName: "opcoes_produto",
     timestamps: true,
     }

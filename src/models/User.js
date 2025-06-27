@@ -32,8 +32,11 @@ const User = connection.define({
     timestamps: true,
     hooks:{
             beforeCreate: async(user) => {
-                const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt); //senha com criptografia (hash)
+                if(!user.password){
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(user.password, salt); //senha com criptografia (hash)
+                }
+                
             }
     }
 });

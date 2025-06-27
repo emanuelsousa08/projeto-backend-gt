@@ -27,10 +27,11 @@ const Product = connection.define({
     use_in_menu: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        references: {
-            model: Category,
-            key: "use_in_menu"
-        }
+        defaultValue: false
+        // references: {
+        //     model: Category,
+        //     key: "use_in_menu"
+        // }
     },
     stock: {
         type: DataTypes.INTEGER,

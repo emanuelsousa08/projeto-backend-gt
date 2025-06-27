@@ -1,19 +1,13 @@
-const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const Auth = (req, res, next) => {
-    const token = req.headers['authorization'];
 
-    if (!token) {
-        return res.status(403).json({ mensagem: 'Token não fornecido' });
-    }
+module.exports = (req, res, next) => {
+    const authHeader = req.headers.authorization;
 
-    try {
-        const decoded = jwt.verify(token, process.env.APP_KEY_TOKEN);
-        req.userId = decoded.id;
-        next();
-    } catch (err) {
-        res.status(403).json({ mensagem: 'Token inválido' });
-    }
+  // validação básica do token (fictícia ou simplificada)
+  if (!authHeader || authHeader !== '123456') {
+    return res.status(401).json({ message: 'Token inválido ou ausente' });
+  }
+
+  next();
 };
-
-module.exports = Auth;
