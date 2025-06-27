@@ -1,11 +1,10 @@
-const { Model, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const connection = require('../config/connection');
 const Category = require('./Category');
 
 
-class Product extends Model {}
 
-Product.init({
+const Product = connection.define({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true, //garante que todo id será único e nunca será null
@@ -52,7 +51,6 @@ Product.init({
         allowNull: false
     }
 },{
-    sequelize: connection,
     tableName: "produtos",
     timestamps: true
 });
