@@ -3,11 +3,40 @@ const Category = require('../models/Category');
 class CategoryController {
   getAllCategories = async (req, res) => {
     try {
-      const categories = await Category.findAll();
-      return res.status(200).json(categories);
+      const limitParam = parseInt(req.query.limit) ?? 12;
+      const page = parseInt(req.query.page) ?? 1;
+      const fields = req.query.fields ? req.query.fields.split(',') : ['id', 'name', 'slug', 'use_in_menu'];
+      const useInMenu = req.query.use_in_menu;
+
+      const limit = limitParam === -1 ? null : limitParam;
+      const offset = limit ? (page - 1) * limit : null;
+
+      const where = {};
+      if (useInMenu !== undefined) {
+        if (useInMenu === 'true') where.use_in_menu = true;
+        else if (useInMenu === 'false') where.use_in_menu = false;
+        else return res.status(400).json({ message: 'use_in_menu deve ser true ou false' });
+      }
+
+      const total = await Category.count({ where });
+
+      const data = await Category.findAll({
+        where,
+        attributes: fields,
+        ...(limit && { limit }),
+        ...(offset && { offset })
+      });
+
+      return res.status(200).json({
+        data,
+        total,
+        limit: limitParam,
+        page
+      });
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao listar categorias" });
+      return res.status(400).json({ error: error.message });
     }
+
   };
 
   getCategoryById = async (req, res) => {
