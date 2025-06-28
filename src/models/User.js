@@ -1,44 +1,38 @@
-const { DataTypes } = require('sequelize');
-const connection = require('../config/connection');
-const bcrypt = require('bcrypt');
+const { Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
-
-const User = connection.define({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true, //garante que todo id será único e nunca será null
-        autoIncrement: true,
-        //unique: true
-    },
-    firstname: {
+class User extends Model {
+  static init(sequelize) {
+    super.init({
+      nome: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    surname: {
+      sobrenome: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    email:{
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
-    password: {
+      senha: {
         type: DataTypes.STRING,
         allowNull: false
-    }
-},{
-    tableName: 'usuarios',
-    timestamps: true,
-    hooks:{
-            beforeCreate: async(user) => {
-                if(!user.password){
-                    const salt = await bcrypt.genSalt(10);
-                    user.password = await bcrypt.hash(user.password, salt); //senha com criptografia (hash)
-                }
-                
-            }
-    }
-});
+    },
+    }, {
+      sequelize,
+      tableName: 'usuarios',
+      hooks: {
+        beforeSave: async (user) => {
+          if (user.changed('senha')) {
+            user.senha = await bcrypt.hash(user.senha, 10);
+          }
+        },
+      },
+    });
+  }
+}
 
 module.exports = User;

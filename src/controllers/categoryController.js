@@ -1,89 +1,60 @@
 const Category = require('../models/Category');
 
 class CategoryController {
-  getAllCategories = async (req, res) => {
+  async search(req, res) {
     try {
-      const categories = await Category.findAll();
-      return res.status(200).json(categories);
-    } catch (error) {
-      return res.status(500).json({ error: "Erro ao listar categorias" });
-    }
-  };
-
-  getCategoryById = async (req, res) => {
-    try {
-      const categoryId = req.params.id;
-      const category = await Category.findByPk(categoryId);
-
-      if (!category) {
-        return res.status(404).json({ message: "Categoria não encontrada" });
+      const { limit = 12, page = 1, fields, use_in_menu } = req.query;
+      const options = { where: {} };
+      
+      if (limit !== '-1') {
+        options.limit = parseInt(limit);
+        options.offset = (page - 1) * limit;
       }
+      
+      if (fields) options.attributes = fields.split(',');
+      if (use_in_menu) options.where.use_in_menu = use_in_menu === 'true';
 
-      return res.status(200).json(category);
-    } catch (error) {
-      return res.status(500).json({ error: "Erro ao buscar categoria" });
-    }
-  };
+      const { count, rows } = await Category.findAndCountAll(options);
 
-  createCategory = async (req, res) => {
-    try {
-      const { name, slug, use_in_menu } = req.body;
-
-      if (!name || !slug) {
-        return res.status(400).json({ message: "Campos obrigatórios não preenchidos" });
-      }
-
-      const newCategory = await Category.create({
-        name,
-        slug,
-        use_in_menu
+      return res.status(200).json({
+        data: rows, total: count,
+        limit: limit === '-1' ? count : parseInt(limit),
+        page: limit === '-1' ? 1 : parseInt(page),
       });
 
-      return res.status(201).json(newCategory);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: 'Falha na busca.', details: error.message });
     }
-  };
+  }
 
-  updateCategory = async (req, res) => {
+  async getById(req, res) {
+    const category = await Category.findByPk(req.params.id);
+    if (!category) return res.status(404).json({ error: 'Categoria não encontrada.' });
+    return res.status(200).json(category);
+  }
+
+  async create(req, res) {
     try {
-      const categoryId = req.params.id;
-      const { name, slug, use_in_menu } = req.body;
-
-      const category = await Category.findByPk(categoryId);
-
-      if (!category) {
-        return res.status(404).json({ message: "Categoria não encontrada" });
-      }
-
-      await category.update({
-        name,
-        slug,
-        use_in_menu
-      });
-
-      return res.status(204).send();
+      await Category.create(req.body);
+      return res.status(201).send();
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: 'Falha ao criar categoria.' });
     }
-  };
+  }
 
-  deleteCategory = async (req, res) => {
-    try {
-      const categoryId = req.params.id;
-      const category = await Category.findByPk(categoryId);
+  async update(req, res) {
+    const category = await Category.findByPk(req.params.id);
+    if (!category) return res.status(404).json({ error: 'Categoria não encontrada.' });
+    await category.update(req.body);
+    return res.status(204).send();
+  }
 
-      if (!category) {
-        return res.status(404).json({ message: "Categoria não encontrada" });
-      }
-
-      await category.destroy();
-
-      return res.status(204).send();
-    } catch (error) {
-      return res.status(500).json({ error: "Erro ao deletar categoria" });
-    }
-  };
+  async delete(req, res) {
+    const category = await Category.findByPk(req.params.id);
+    if (!category) return res.status(404).json({ error: 'Categoria não encontrada.' });
+    await category.destroy();
+    return res.status(204).send();
+  }
 }
 
-module.exports = CategoryController;
+module.exports = new CategoryController();
