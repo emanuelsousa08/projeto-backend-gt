@@ -1,58 +1,47 @@
-const { DataTypes } = require('sequelize');
-const connection = require('../config/connection');
-const Category = require('./Category');
+const { Model, DataTypes } = require('sequelize');
 
-
-
-const Product = connection.define({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true, //garante que todo id será único e nunca será null
-        autoIncrement: true,
-        //unique: true
-    },
-    enabled: {
+class Product extends Model {
+  static init(sequelize) {
+    super.init({
+      enabled: {
         type: DataTypes.BOOLEAN,
-        defaultValue: 0,
-        allowNull: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    slug: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    use_in_menu: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
         defaultValue: false
-        // references: {
-        //     model: Category,
-        //     key: "use_in_menu"
-        // }
     },
-    stock: {
+      nome: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+      stock: {
         type: DataTypes.INTEGER,
-        allowNull: true,
         defaultValue: 0
     },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true
+      description: {
+        type: DataTypes.TEXT
     },
-    price: {
+      preco: {
         type: DataTypes.FLOAT,
         allowNull: false
     },
-    price_with_discount: {
+      price_with_discount: {
         type: DataTypes.FLOAT,
         allowNull: false
-    }
-},{
-    tableName: "produtos",
-    timestamps: true
-});
+    },
+    }, {
+      sequelize,
+      tableName: 'produtos',
+    });
+  }
+
+  static associate(models) {
+    this.hasMany(models.ProductImage, { foreignKey: 'product_id', as: 'images' });
+    this.hasMany(models.ProductOption, { foreignKey: 'product_id', as: 'options' });
+    this.belongsToMany(models.Category, { foreignKey: 'product_id', through: 'produtos_categorias', as: 'categories' });
+  }
+}
 
 module.exports = Product;

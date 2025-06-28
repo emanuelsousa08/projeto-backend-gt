@@ -1,190 +1,61 @@
-const User = require("../models/User");
+const User = require('../models/User');
 
 class UserController {
-
-  getUserById = async (req, res) => {
+  async getById(req, res) {
     try {
-      const userId = req.params.id;
-
-      const user = await User.findByPk(userId, {
-        attributes: ["id", "firstname", "surname", "email"],
+      const user = await User.findByPk(req.params.id, {
+        attributes: ['id', 'nome', 'sobrenome', 'email']
       });
 
-      if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
+      if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+      
+      const response = { id: user.id, firstname: user.nome, surname: user.sobrenome, email: user.email };
 
-      return res.status(200).json(user);
+      return res.status(200).json(response);
     } catch (error) {
-      return res.status(500).json({ error: "Erro no servidor" });
+      return res.status(400).json({ error: 'Falha ao buscar usuário.' });
     }
-  };
+  }
 
-  createUser = async (req, res) => {
+  async create(req, res) {
+    const { email, password, confirmPassword, firstname, surname } = req.body;
+    
+    if (password !== confirmPassword) return res.status(400).json({ error: 'As senhas não conferem.' });
+    if (await User.findOne({ where: { email } })) return res.status(400).json({ error: 'Este email já está em uso.' });
+    
     try {
-      const { firstname, surname, email, password, confirmPassword } = req.body;
-
-      // validação básica
-      if (!firstname || !surname || !email || !password || !confirmPassword) {
-        return res.status(400).json({ message: "Preencha todos os campos" });
-      }
-
-      if (password !== confirmPassword) {
-        return res.status(400).json({ message: "As senhas não coincidem" });
-      }
-
-      // cria o usuário (o hash da senha já é tratado no model)
-      const newUser = await User.create({
-        firstname,
-        surname,
-        email,
-        password,
-      });
-
-      return res.status(201).json({
-        id: newUser.id,
-        firstname: newUser.firstname,
-        surname: newUser.surname,
-        email: newUser.email,
-      });
+      await User.create({ email, senha: password, nome: firstname, sobrenome: surname });
+      return res.status(201).send();
     } catch (error) {
-      // erro de e-mail duplicado ou outros
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: 'Falha ao criar usuário.', details: error.message });
     }
-  };
+  }
 
-  updateUser = async (req, res) => {
+  async update(req, res) {
     try {
-      const userId = req.params.id;
+      const user = await User.findByPk(req.params.id);
+      if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+      
       const { firstname, surname, email } = req.body;
+      await user.update({ nome: firstname, sobrenome: surname, email });
 
-      // validação básica
-      if (!firstname || !surname || !email) {
-        return res
-          .status(400)
-          .json({ message: "Todos os campos são obrigatórios" });
-      }
-
-      const user = await User.findByPk(userId);
-
-      if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
-
-      // atualiza os dados
-      await user.update({ firstname, surname, email });
-
-      return res.status(204).send(); // sem corpo
+      return res.status(204).send();
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: 'Falha ao atualizar usuário.' });
     }
-  };
-  deleteUser = async (req, res) => {
+  }
+
+  async delete(req, res) {
     try {
-      const userId = req.params.id;
-
-      const user = await User.findByPk(userId);
-
-      if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
-
+      const user = await User.findByPk(req.params.id);
+      if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+      
       await user.destroy();
-
-      return res.status(204).send(); // sucesso, sem conteúdo
+      return res.status(204).send();
     } catch (error) {
-      return res.status(500).json({ error: "Erro interno do servidor" });
+      return res.status(400).json({ error: 'Falha ao deletar usuário.' });
     }
-  };
+  }
 }
 
-module.exports = UserController;
-
-// exports.getUserById = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-
-//     const user = await User.findByPk(userId, {
-//       attributes: ['id', 'firstname', 'surname', 'email'],
-//     });
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'Usuário não encontrado' });
-//     }
-
-//     return res.status(200).json(user);
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro no servidor' });
-//   }
-// };
-
-// exports.createUser = async (req, res) => {
-//   try {
-//     const { firstname, surname, email, password, confirmPassword } = req.body;
-
-//     // validação básica
-//     if (!firstname || !surname || !email || !password || !confirmPassword) {
-//       return res.status(400).json({ message: 'Preencha todos os campos' });
-//     }
-
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({ message: 'As senhas não coincidem' });
-//     }
-
-//     // cria o usuário (o hash da senha já é tratado no model)
-//     const newUser = await User.create({ firstname, surname, email, password });
-
-//     return res.status(201).json({
-//       id: newUser.id,
-//       firstname: newUser.firstname,
-//       surname: newUser.surname,
-//       email: newUser.email,
-//     });
-//   } catch (error) {
-//     // erro de e-mail duplicado ou outros
-//     return res.status(400).json({ error: error.message });
-//   }
-// };
-
-// exports.updateUser = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-//     const { firstname, surname, email } = req.body;
-
-//     // validação básica
-//     if (!firstname || !surname || !email) {
-//       return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
-//     }
-
-//     const user = await User.findByPk(userId);
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'Usuário não encontrado' });
-//     }
-
-//     // atualiza os dados
-//     await user.update({ firstname, surname, email });
-
-//     return res.status(204).send(); // sem corpo
-//   } catch (error) {
-//     return res.status(400).json({ error: error.message });
-//   }
-// };
-
-// exports.deleteUser = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-
-//     const user = await User.findByPk(userId);
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'Usuário não encontrado' });
-//     }
-
-//     await user.destroy();
-
-//     return res.status(204).send(); // sucesso, sem conteúdo
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro interno do servidor' });
-//   }
-// };
+module.exports = new UserController();
