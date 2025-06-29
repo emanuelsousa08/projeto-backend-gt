@@ -35,7 +35,7 @@ Esta é uma API backend desenvolvida em Node.js para dar suporte a aplicação d
 
 > **Observação:**  
 > Endpoints marcados com "Sim" em autenticação exigem envio do token JWT no header Authorization.
-> No Header deve ser fornecido a chave declarada do arquivo .env.
+> No Header, deve ser fornecido a chave declarada do arquivo .env.
 > Nas requisições de PUT e DELETE deve ser passado o token (gerado na requisição POST de criar o token) em uma chave Bearer no Auth.
 
 ## 📋 Pré-requisitos
@@ -97,8 +97,8 @@ npm run test
 
 Agradecimentos especiais a todos que contribuíram para este projeto:
 
-- 👑 Emanuel Sousa (O protagonista) - @emanuelsousa08
-- Kamila Vieira - @kamilavieira
+- 👑 Emanuel Sousa (O protagonista) - [@emanuelsousa08](https://github.com/emanuelsousa08)
+- Kamila Vieira - [@kamilavieira](https://github.com/kamilavieira)
 
 ## 🧾 Licença
 
