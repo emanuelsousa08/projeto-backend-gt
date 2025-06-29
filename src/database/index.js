@@ -24,6 +24,10 @@ class Database {
         model.associate(this.connection.models);
       }
     });
+
+    this.connection.sync()
+      .then(() => console.log('Banco de dados sincronizado!'))
+      .catch(err => console.error('Erro ao sincronizar o banco:', err));
   }
 }
 
