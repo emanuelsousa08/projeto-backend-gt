@@ -13,6 +13,29 @@ Esta é uma API backend desenvolvida em Node.js para dar suporte a aplicação d
 - 🧩 **Ambiente de desenvolvimento** para separação de lógica dos controllers existentes;
 - 🖥️ **Conexão com banco de dados** MySQL usando Sequelize.
 
+## 📑 Endpoints Principais
+
+| Método  | Endpoint                | Descrição                        | Autenticação |
+|---------|-------------------------|----------------------------------|--------------|
+| POST    | /v1/usuario             | Cria um novo usuário             | Não          |
+| POST    | /v1/usuario/token       | Gera token JWT (login)           | Não          |
+| GET     | /v1/usuario/:id         | Busca usuário por ID             | Não          |
+| PUT     | /v1/usuario/:id         | Atualiza usuário                 | Sim          |
+| DELETE  | /v1/usuario/:id         | Deleta usuário                   | Sim          |
+| GET     | /v1/categoria/pesquisa  | Lista/pesquisa categorias        | Não          |
+| GET     | /v1/categoria/:id       | Busca categoria por ID           | Não          |
+| POST    | /v1/categoria           | Cria nova categoria              | Sim          |
+| PUT     | /v1/categoria/:id       | Atualiza categoria               | Sim          |
+| DELETE  | /v1/categoria/:id       | Deleta categoria                 | Sim          |
+| GET     | /v1/produto/pesquisa    | Lista/pesquisa produtos          | Não          |
+| GET     | /v1/produto/:id         | Busca produto por ID             | Não          |
+| POST    | /v1/produto             | Cria novo produto                | Sim          |
+| PUT     | /v1/produto/:id         | Atualiza produto                 | Sim          |
+| DELETE  | /v1/produto/:id         | Deleta produto                   | Sim          |
+
+> **Observação:**  
+> Endpoints marcados com "Sim" em autenticação exigem envio do token JWT no header Authorization.
+
 ## 📋 Pré-requisitos
 
 Antes de começar, certifique-se de ter instalado:
