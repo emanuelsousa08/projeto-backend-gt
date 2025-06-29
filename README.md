@@ -71,7 +71,7 @@ npm install
 ```
 ## ▶️ Como Executar
 
-# Crie seu arquivo de configuração
+## Crie seu arquivo de configuração
 
 Por segurança, o arquivo .env não está no repositório. Você deve criar uma cópia do arquivo de exemplo para configurar suas variáveis. Para copiar, digite o seguinte comando:
 
